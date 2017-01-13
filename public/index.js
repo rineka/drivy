@@ -182,6 +182,55 @@ function ChangePriceCommission()
 	}
 }
 
+function ChangePriceOption()
+{
+	for (var i=0;i<rentals.length;i++)
+	{
+		var returnDateTemp=new Date(rentals[i].returnDate);
+		var pickupDateTemp=new Date(rentals[i].pickupDate);
+		var timeDiff = Math.abs(returnDateTemp.getTime() - pickupDateTemp.getTime());
+		var day=Math.ceil(timeDiff / (1000 * 3600 * 24))+1;
+		var timeComponent;
+		var distanceComponent;
+		for (var j=0;j<cars.length;j++)
+		{
+			if(rentals[i].carId==cars[j].id)
+			{			
+				timeComponent=day*cars[j].pricePerDay;
+				if((day>1)&&(day<5))
+				{
+					timeComponent=day*cars[j].pricePerDay*0.9;
+				}
+				if((day>4)&&(day<11))
+				{
+					timeComponent=day*cars[j].pricePerDay*0.7;
+				}
+				if(day>10)
+				{
+					timeComponent=day*cars[j].pricePerDay*0.5;
+				}
+				distanceComponent=rentals[i].distance*cars[j].pricePerKm;
+			}
+		}
+		rentals[i].price=timeComponent+distanceComponent;
+		
+		var commission = rentals[i].price*0.3;
+		rentals[i].commission.insurance=commission*0.5;
+		rentals[i].commission.assistance=day;
+		rentals[i].commission.drivy=commission-rentals[i].commission.insurance-rentals[i].commission.assistance;
+		if(rentals[i].options.deductibleReduction)
+		{
+			rentals[i].commission.drivy+=4*day;
+			rentals[i].price+=4*day;
+		}
+		console.log("price ",rentals[i].id," : ", rentals[i].price);
+		console.log("commission : ", commission);
+		console.log("insurance : ",rentals[i].commission.insurance);
+		console.log("assistance : ",rentals[i].commission.assistance);
+		console.log("drivy : ",rentals[i].commission.drivy);
+	}
+}
+
 
 //list of actors for payment
 //useful from exercise 5
@@ -272,6 +321,8 @@ console.log("ex2");
 ChangePricePerDay();
 console.log("exo3");
 ChangePriceCommission();
+console.log("exo4");
+ChangePriceOption();
 console.log(cars);
 console.log(rentals);
 console.log(actors);
