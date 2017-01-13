@@ -80,7 +80,7 @@ var rentals = [{
     'drivy': 0
   }
 }];
-
+// 
 function ChangePrice()
 {
 	for (var i=0;i<rentals.length;i++)
