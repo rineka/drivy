@@ -80,7 +80,7 @@ var rentals = [{
     'drivy': 0
   }
 }];
-// 
+
 function ChangePrice()
 {
 	for (var i=0;i<rentals.length;i++)
@@ -100,12 +100,44 @@ function ChangePrice()
 			}
 		}
 		rentals[i].price=timeComponent+distanceComponent;
-	//	console.log(day);
-	//	console.log(timeComponent);
-	//	console.log(distanceComponent);
+		console.log("price ",rentals[i].id," : ", rentals[i].price);
 	}
 }
 
+function ChangePricePerDay()
+{
+	for (var i=0;i<rentals.length;i++)
+	{
+		var returnDateTemp=new Date(rentals[i].returnDate);
+		var pickupDateTemp=new Date(rentals[i].pickupDate);
+		var timeDiff = Math.abs(returnDateTemp.getTime() - pickupDateTemp.getTime());
+		var day=Math.ceil(timeDiff / (1000 * 3600 * 24))+1;
+		var timeComponent;
+		var distanceComponent;
+		for (var j=0;j<cars.length;j++)
+		{
+			if(rentals[i].carId==cars[j].id)
+			{			
+				timeComponent=day*cars[j].pricePerDay;
+				if((day>1)&&(day<5))
+				{
+					timeComponent=day*cars[j].pricePerDay*0.9;
+				}
+				if((day>4)&&(day<11))
+				{
+					timeComponent=day*cars[j].pricePerDay*0.7;
+				}
+				if(day>10)
+				{
+					timeComponent=day*cars[j].pricePerDay*0.5;
+				}
+				distanceComponent=rentals[i].distance*cars[j].pricePerKm;
+			}
+		}
+		rentals[i].price=timeComponent+distanceComponent;
+		console.log("price ",rentals[i].id," : ", rentals[i].price);
+	}
+}
 
 
 //list of actors for payment
@@ -191,8 +223,10 @@ var rentalModifications = [{
   'rentalId': '3-sa-92',
   'pickupDate': '2015-12-05'
 }];
-
+console.log("ex1");
 ChangePrice();
+console.log("ex2");
+ChangePricePerDay();
 console.log(cars);
 console.log(rentals);
 console.log(actors);
