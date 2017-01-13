@@ -81,6 +81,33 @@ var rentals = [{
   }
 }];
 
+function ChangePrice()
+{
+	for (var i=0;i<rentals.length;i++)
+	{
+		var returnDateTemp=new Date(rentals[i].returnDate);
+		var pickupDateTemp=new Date(rentals[i].pickupDate);
+		var timeDiff = Math.abs(returnDateTemp.getTime() - pickupDateTemp.getTime());
+		var day=Math.ceil(timeDiff / (1000 * 3600 * 24))+1;
+		var timeComponent;
+		var distanceComponent;
+		for (var j=0;j<cars.length;j++)
+		{
+			if(rentals[i].carId==cars[j].id)
+			{
+				timeComponent=day*cars[j].pricePerDay;
+				distanceComponent=rentals[i].distance*cars[j].pricePerKm;
+			}
+		}
+		rentals[i].price=timeComponent+distanceComponent;
+	//	console.log(day);
+	//	console.log(timeComponent);
+	//	console.log(distanceComponent);
+	}
+}
+
+
+
 //list of actors for payment
 //useful from exercise 5
 var actors = [{
@@ -165,6 +192,7 @@ var rentalModifications = [{
   'pickupDate': '2015-12-05'
 }];
 
+ChangePrice();
 console.log(cars);
 console.log(rentals);
 console.log(actors);
